@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="./style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <title>LED controller</title>
+  </head>
+  <body>
+    <script type="module">
+      import init from './pkg/led_control.js';
+      async function run() {
+        await init();
+      }
+      run();
+    </script>
+    <div id="main_div">
+      <div class="titlebox">
+        <div class="controls">
+          <p id="color1" class="head">color 1</p>
+	  <div class="slider_row">
+	    <input type="range" id="color1_h" name="color1_h" class="slider" min="0" max="1" step="0.01">
+	    <input type="number" id="color1_h_text" class="inputs" min="0" max="1" step="0.01">
+	    <label for="color1_h" class="labels">hue</label></br>
+	  </div>
+          <div class="slider_row">
+	    <input type="range" id="color1_s" name="color1_s" class="slider" min="0" max="1" step="0.01">
+            <input type="number" id="color1_s_text" class="inputs" min="0" max="1" step="0.01">
+	    <label for="color1_s" class="labels">sat</label></br>
+         </div>
+          <div class="slider_row">
+	    <input type="range" id="color1_v" name="color1_v" class="slider" min="0" max="1" step="0.01">
+            <input type="number" id="color1_v_text" class="inputs" min="0" max="1" step="0.01">
+	    <label for="color1_v" class="labels">val</label></br>
+	  </div>
+        </div>
+        
+        <div class="swatch">
+          <svg xmlns="http://www.w3.org/2000/svg" version="1.1" style="width: 100%; height: 100%">
+            <rect id="color1_swatch" x="0" y="0" width="100%" height="100%" style="fill: rgba(63, 127, 127, 1.0)"/>
+          </svg>
+        </div>
+      </div>
+      
+      <div class="titlebox">
+        <div class="controls">
+          <p id="color2" class="head">color 2</p>
+          <div class="slider_row">
+	    <input type="range" id="color2_h" name="color2_h" class="slider" min="0" max="1" step="0.01">
+            <input type="number" id="color2_h_text" class="inputs" min="0" max="1" step="0.01">
+	    <label for="color2_h" class="labels">hue</label></br>
+          </div>
+          <div class="slider_row">
+	    <input type="range" id="color2_s" name="color2_s" class="slider" min="0" max="1" step="0.01">
+            <input type="number" id="color2_s_text" class="inputs" min="0" max="1" step="0.01">
+	    <label for="color2_s" class="labels">sat</label></br>
+          </div>
+          <div class="slider_row">
+	    <input type="range" id="color2_v" name="color2_v" class="slider" min="0" max="1" step="0.01">
+            <input type="number" id="color2_v_text" class="inputs" min="0" max="1" step="0.01">
+	    <label for="color2_v" class="labels">val</label></br>
+          </div>
+        </div>
+        
+        <div class="swatch">
+          <svg xmlns="http://www.w3.org/2000/svg" version="1.1" style="width: 100%; height: 100%">
+            <rect id="color2_swatch" x="0" y="0" width="100%" height="100%" style="fill: rgba(63, 127, 127, 1.0)"/>
+          </svg>
+        </div>
+      </div>
+      
+      <div class="titlebox">
+        <div class="controls">
+          <p id="color3" class="head">color 3</p>
+          <div class="slider_row">
+	    <input type="range" id="color3_h" name="color3_h" class="slider" min="0" max="1" step="0.01">
+            <input type="number" id="color3_h_text" class="inputs" min="0" max="1" step="0.01">
+	    <label for="color3_h" class="labels">hue</label></br>
+          </div>
+          <div class="slider_row">
+	    <input type="range" id="color3_s" name="color3_s" class="slider" min="0" max="1" step="0.01">
+            <input type="number" id="color3_s_text" class="inputs" min="0" max="1" step="0.01">
+	    <label for="color3_s" class="labels">sat</label></br>
+          </div>
+          <div class="slider_row">
+	    <input type="range" id="color3_v" name="color3_v" class="slider" min="0" max="1" step="0.01">
+            <input type="number" id="color3_v_text" class="inputs" min="0" max="1" step="0.01">
+	    <label for="color3_v" class="labels">val</label></br>
+          </div>
+	</div>
+        
+        <div class="swatch">
+          <svg xmlns="http://www.w3.org/2000/svg" version="1.1" style="width: 100%; height: 100%">
+            <rect id="color3_swatch" x="0" y="0" width="100%" height="100%" style="fill: rgba(63, 127, 127, 1.0)"/>
+          </svg>
+        </div>
+      </div>
+      
+      <div class="titlebox">
+        <div class="pattern-div">
+          <p class="head">pattern</p>
+          <select name="pattern-select" id="patterns" class="pattern-el">
+          </select>
+
+          <p class="head">device</p>
+          <select name="device-select" id="devices" class="pattern-el">
+          </select>
+        </div>
+        
+        <div class="send-div">
+          <button id="send" class="send-btn" type="button">SEND</button>
+        </div>
+      </div>
+    </div>
+    
+    <div style="display: none;">
+      <p id="endpoint">led_api_01</p>
+    </div>
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1"
+      viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice"
+      style="width:100%; height:100%; position:absolute; top:0; left:0; z-index:-1;">
+      <linearGradient id="svg_bg" gradientTransform="rotate(90)">
+        <stop id="bg_begin" offset="0%"   stop-color="hsla(0, 0%, 50%, 1.0)" />
+        <stop id="bg_end"   offset="100%" stop-color="hsla(0, 100%, 0%, 1.0)" />
+      </linearGradient>
+      <rect x="0" y="0" width="100" height="100" fill="url('#svg_bg')" />
+    </svg>
+  </body>
+</html>
