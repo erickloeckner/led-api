@@ -1,0 +1,17 @@
+[main]
+led_count = [10]
+led_type = 0
+brightness = 0.1
+secs_per_update = 0.02
+port = 8000
+spi_devices = ["/dev/spidev0.0"]
+devices = ["SPI 0"]
+
+[patterns]
+names = ["0 - off", "1 - gradient", "2 - sine wave", "3 - random1"]
+scroll_speed = 0.0004
+
+[rand]
+count = 1
+falloff = 4.0
+max_speed = 0.01
