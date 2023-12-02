@@ -1,0 +1,139 @@
+*{
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+#main_div {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr;
+  
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  width: 100%;
+  border: 2px solid;
+}
+
+.titlebox {
+  display: flex;
+  border: 0px;
+  padding: 2px;
+  margin: 4px;
+  text-align: center;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1.5rem;
+  color: rgba(235, 235, 235, 1.0);
+  background-color: rgba(0, 0, 0, 0.2);
+  text-shadow: 1px 1px 0px rgba(0, 0, 0, 1.0),
+               2px 2px 0px rgba(0, 0, 0, 0.6),
+               3px 3px 0px rgba(0, 0, 0, 0.3);
+  
+}
+
+.head {
+  padding-top: 5%;
+  padding-bottom: 1%;
+}
+
+.controls {
+  width: 80%;
+}
+
+.swatch {
+  width: 20%;
+  
+}
+
+.pattern-div {
+  width: 70%;
+}
+
+.pattern-el {
+  width: 80%;
+  padding: 1%;
+  font-family: "VT323", monospace;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 2rem;
+  color: rgba(191, 191, 191, 1.0);
+  background: rgba(0, 0, 0, 1.0);
+}
+
+.send-div {
+  width: 30%;
+}
+
+.send-btn {
+  width: 100%;
+  height: 50%;
+  margin-top: 50%;
+  font-family: "VT323", monospace;
+  font-size: 3rem;
+  color: rgba(191, 191, 191, 1.0);
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+.large-text {
+  margin-top: 20%;
+  font-size: 5.0rem;
+}
+
+.large-text-bottom {
+  margin-top: 0%;
+  border: 0;
+  font-size: 3.75rem;
+}
+
+.medium-text {
+  font-size: 3.5rem;
+  width: 50%;
+}
+
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 60%;
+  height: 80%;
+  
+  margin-top: 0.5%;
+  margin-bottom: 0.5%;
+  background: rgba(63, 63, 63, 0.5);
+  border: 4px solid rgba(0, 0, 0, 1.0);
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 5%;
+  height: 3.2em;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.slider_row {
+  height: 20%;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.labels {
+  vertical-align: 60%;
+}
+
+.inputs {
+  width: 10%;
+  height: 100%;
+  margin: 2%;
+  font-family: "VT323", monospace;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1rem;
+  color: rgba(191, 191, 191, 1.0);
+  background: rgba(0, 0, 0, 1.0);
+  border: 2px solid;
+}
+
+@font-face {
+  font-family: "VT323";
+  src: url("./VT323-Regular.ttf");
+}
