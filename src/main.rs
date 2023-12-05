@@ -271,7 +271,7 @@ async fn main() {
         .and(warp::fs::file("./static/style.css"));
 
     let pkg = warp::path("pkg")
-        .and(warp::fs::dir("./static/pkg/"));
+        .and(warp::fs::dir("./wasm/pkg/"));
     
     let get = warp::path("get")
         .and(warp::path::param::<usize>())
