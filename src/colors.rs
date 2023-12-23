@@ -1,6 +1,6 @@
 use serde::{Serialize, Deserialize};
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub struct ColorRgb {
     r: u8,
     g: u8,
@@ -47,7 +47,7 @@ impl ColorRgb {
     }
 }
 
-#[derive(Debug, Copy, Clone, Serialize, Deserialize)]
+#[derive(Debug, Copy, Clone, Serialize, Deserialize, PartialEq)]
 pub struct ColorHsv {
     h: f32,
     s: f32,
@@ -169,7 +169,14 @@ pub fn hsv_interp(col1: &ColorHsv, col2: &ColorHsv, pos: f32) -> ColorHsv {
 }
 
 pub fn hsv_interp_3(col1: &ColorHsv, col2: &ColorHsv, col3: &ColorHsv, pos: f32) -> ColorHsv {
-	let pos_clip = pos.max(0.0).min(1.0);
+	let mut pos_clip = 0.0;
+    if pos < 0.0 {
+        pos_clip = pos.max(-1.0);
+    } else if pos > 0.0 {
+        pos_clip = pos.min(1.0);
+    } else {
+        pos_clip = 0.0;
+    }
 	if pos_clip > 0.0 {
         let h_range = col1.h - col2.h;
         let s_range = col1.s - col2.s;
@@ -196,5 +203,39 @@ pub fn hsv_interp_3(col1: &ColorHsv, col2: &ColorHsv, col3: &ColorHsv, pos: f32)
         let v_out = col1.v;
 
         ColorHsv { h: h_out, s: s_out, v: v_out }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_colorhsv() {
+        // -test ColorHsv::new() with pure black
+        assert_eq!(ColorHsv::new(0.0, 0.0, 0.0), ColorHsv {h: 0.0, s: 0.0, v: 0.0});
+        let col_hsv_white = ColorHsv::new(0.0, 0.0, 1.0);
+        let col_hsv_black = ColorHsv::new(0.0, 0.0, 0.0);
+        let col_rgb_white = ColorRgb::new(255, 255, 255);
+        // array equal to (0.0, 0.0, 1.0) converted to little endian
+        let byte_array_1 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63];
+        
+        // -test- converting from HSV to bytes and bytes to HSV
+        assert_eq!(col_hsv_white.to_le_bytes(), byte_array_1);
+        assert_eq!(ColorHsv::from_le_bytes(byte_array_1), col_hsv_white);
+
+        // -test- converting HSV to RGB
+        assert_eq!(col_hsv_white.to_rgb(), col_rgb_white);
+    }
+
+    #[test]
+    fn test_interp_functions() {
+        let col_hsv_white = ColorHsv::new(0.0, 0.0, 1.0);
+        let col_hsv_black = ColorHsv::new(0.0, 0.0, 0.0);
+
+        // -test- HSV interpolation functions
+        assert_eq!(hsv_interp(&col_hsv_black, &col_hsv_white, 0.0), col_hsv_black);
+        assert_eq!(hsv_interp(&col_hsv_black, &col_hsv_white, 0.5), ColorHsv::new(0.0, 0.0, 0.5));
+        assert_eq!(hsv_interp(&col_hsv_black, &col_hsv_white, 1.0), col_hsv_white);
     }
 }
