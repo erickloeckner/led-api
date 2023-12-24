@@ -215,8 +215,9 @@ mod tests {
         // -test ColorHsv::new() with pure black
         assert_eq!(ColorHsv::new(0.0, 0.0, 0.0), ColorHsv {h: 0.0, s: 0.0, v: 0.0});
         let col_hsv_white = ColorHsv::new(0.0, 0.0, 1.0);
-        let col_hsv_black = ColorHsv::new(0.0, 0.0, 0.0);
         let col_rgb_white = ColorRgb::new(255, 255, 255);
+        let col_hsv_red = ColorHsv::new(0.0, 1.0, 1.0);
+        let col_rgb_red = ColorRgb::new(255, 0, 0);
         // array equal to (0.0, 0.0, 1.0) converted to little endian
         let byte_array_1 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63];
         
@@ -226,16 +227,28 @@ mod tests {
 
         // -test- converting HSV to RGB
         assert_eq!(col_hsv_white.to_rgb(), col_rgb_white);
+        assert_eq!(col_hsv_red.to_rgb(), col_rgb_red);
     }
 
     #[test]
     fn test_interp_functions() {
         let col_hsv_white = ColorHsv::new(0.0, 0.0, 1.0);
         let col_hsv_black = ColorHsv::new(0.0, 0.0, 0.0);
+        let col_hsv_h0 = ColorHsv::new(0.0, 1.0, 1.0);
+        let col_hsv_h25 = ColorHsv::new(0.25, 1.0, 1.0);
+        let col_hsv_h50 = ColorHsv::new(0.5, 1.0, 1.0);
+        let col_hsv_h75 = ColorHsv::new(0.75, 1.0, 1.0);
+        let col_hsv_h100 = ColorHsv::new(1.0, 1.0, 1.0);
 
         // -test- HSV interpolation functions
         assert_eq!(hsv_interp(&col_hsv_black, &col_hsv_white, 0.0), col_hsv_black);
         assert_eq!(hsv_interp(&col_hsv_black, &col_hsv_white, 0.5), ColorHsv::new(0.0, 0.0, 0.5));
         assert_eq!(hsv_interp(&col_hsv_black, &col_hsv_white, 1.0), col_hsv_white);
+
+        assert_eq!(hsv_interp_3(&col_hsv_h50, &col_hsv_h100, &col_hsv_h0, 0.0), col_hsv_h50);
+        assert_eq!(hsv_interp_3(&col_hsv_h50, &col_hsv_h100, &col_hsv_h0, 0.5), col_hsv_h75);
+        assert_eq!(hsv_interp_3(&col_hsv_h50, &col_hsv_h100, &col_hsv_h0, 1.0), col_hsv_h100);
+        assert_eq!(hsv_interp_3(&col_hsv_h50, &col_hsv_h100, &col_hsv_h0, -0.5), col_hsv_h25);
+        assert_eq!(hsv_interp_3(&col_hsv_h50, &col_hsv_h100, &col_hsv_h0, -1.0), col_hsv_h0);
     }
 }
