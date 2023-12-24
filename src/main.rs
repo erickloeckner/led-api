@@ -21,8 +21,6 @@ use leds::{Leds, LedType};
 mod sprites;
 use sprites::Sprite;
 
-mod tests;
-
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 struct LedState {
     color1: Option<ColorHsv>,
