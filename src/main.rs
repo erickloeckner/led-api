@@ -191,14 +191,24 @@ async fn main() {
         }
         let mut spi_devs = Vec::new();
         for i in config.main.spi_devices {
-            let mut spi = Spidev::open(&i).expect(&format!("Unable to open SPI device {}", &i));
-            let options = SpidevOptions::new()
-                .bits_per_word(8)
-                .max_speed_hz(8_000_000)
-                .mode(SpiModeFlags::SPI_MODE_0)
-                .build();
-            spi.configure(&options).unwrap();
-            spi_devs.push(spi);
+            //let mut spi = Spidev::open(&i).expect(&format!("Unable to open SPI device {}", &i));
+            let spi = Spidev::open(&i);
+            if spi.is_ok() {
+                let mut spi_inner = spi.unwrap();
+                let options = SpidevOptions::new()
+                    .bits_per_word(8)
+                    .max_speed_hz(8_000_000)
+                    .mode(SpiModeFlags::SPI_MODE_0)
+                    .build();
+                //spi_inner.configure(&options).unwrap();
+                if spi_inner.configure(&options).is_ok() {
+                    spi_devs.push(Some(spi_inner));
+                } else {
+                    spi_devs.push(None);
+                }
+            } else {
+                spi_devs.push(None);
+            }
         }
         //let options = SpidevOptions::new()
         //    .bits_per_word(8)
@@ -220,25 +230,33 @@ async fn main() {
                     // all LEDs off
                     Some(0) => {
                         led.all_off();
-                        let _ = spi.write(&led.get_buffer());
+                        spi.iter_mut().for_each(|i| {
+                            let _ = i.write(&led.get_buffer());
+                        });
                     },
                     // fixed gradient
                     Some(1) => {
                         let cols = brightness_adjust(&led_data, config.main.brightness);
                         led.fill_gradient_triple(&cols[0], &cols[1], &cols[2]);
-                        let _ = spi.write(&led.get_buffer());
+                        spi.iter_mut().for_each(|i| {
+                            let _ = i.write(&led.get_buffer());
+                        });
                     },
                     // scrolling sine wave
                     Some(2) => {
                         let cols = brightness_adjust(&led_data, config.main.brightness);
                         led.fill_sine(&cols[0], &cols[1], &cols[2], offset);
-                        let _ = spi.write(&led.get_buffer());
+                        spi.iter_mut().for_each(|i| {
+                            let _ = i.write(&led.get_buffer());
+                        });
                     },
                     // random sprites
                     Some(3) => {
                         let cols = brightness_adjust(&led_data, config.main.brightness);
                         led.fill_sprites(&cols[0], &cols[1], &cols[2], &sprites);
-                        let _ = spi.write(&led.get_buffer());
+                        spi.iter_mut().for_each(|i| {
+                            let _ = i.write(&led.get_buffer());
+                        });
                     },
                     Some(4) => {
                         println!("pattern4");
