@@ -2,9 +2,10 @@
 use std::{env, process};
 use std::fs::{self, File};
 use std::io::prelude::*;
+use std::io::ErrorKind;
 use std::sync::{Arc, Mutex};
 use std::thread::{self, sleep};
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use fastrand;
 use serde::{Serialize, Deserialize};
@@ -87,6 +88,30 @@ fn brightness_adjust(leds: &LedState, brightness: f32) -> [ColorHsv; 3] {
     col2.set_v(col2.get_v() * brightness);
     col3.set_v(col3.get_v() * brightness);
     [col1, col2, col3]
+}
+
+fn wait_for_file(file_name: &str, timeout: u64) -> bool {
+    let start = Instant::now();
+    let mut result = false;
+    loop {
+        match File::open(file_name) {
+            Ok(_) => {
+                result = true;
+                break;
+            }
+            Err(e) => {
+                if e.kind() != ErrorKind::NotFound { 
+                    println!("unexpected error: {:?}", e);
+                    break;
+                }
+            }
+        }
+        if start.elapsed().as_secs() >= timeout {
+            break;
+        }
+        sleep(Duration::new(1, 0));
+    }
+    result
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -191,7 +216,26 @@ async fn main() {
         }
         let mut spi_devs = Vec::new();
         for i in config.main.spi_devices {
-            //let mut spi = Spidev::open(&i).expect(&format!("Unable to open SPI device {}", &i));
+            if wait_for_file(&i, 60) {
+                match Spidev::open(&i) {
+                    Ok(mut spi) => {
+                        let options = SpidevOptions::new()
+                            .bits_per_word(8)
+                            .max_speed_hz(8_000_000)
+                            .mode(SpiModeFlags::SPI_MODE_0)
+                            .build();
+                        if spi.configure(&options).is_ok() {
+                            spi_devs.push(Some(spi));
+                        } else {
+                            spi_devs.push(None);
+                        }
+                    }
+                    Err(_) => { spi_devs.push(None); }
+                }
+            } else {
+                spi_devs.push(None);
+            }
+            /*
             let spi = Spidev::open(&i);
             if spi.is_ok() {
                 let mut spi_inner = spi.unwrap();
@@ -209,15 +253,9 @@ async fn main() {
             } else {
                 spi_devs.push(None);
             }
+            */
         }
-        //let options = SpidevOptions::new()
-        //    .bits_per_word(8)
-        //    .max_speed_hz(8_000_000)
-        //    .mode(SpiModeFlags::SPI_MODE_0)
-        //    .build();
-        //spi.configure(&options).unwrap();
-
-        //println!("config.main.led_count: {}", config.main.led_count);
+        
         loop {
             //~ println!("LED state: {:?}", led_state_inner);
             
