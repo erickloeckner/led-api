@@ -99,11 +99,13 @@ fn wait_for_file(file_name: &str, timeout: u64) -> bool {
                 result = true;
                 break;
             }
-            Err(e) => {
+            Err(_e) => {
+                /*
                 if e.kind() != ErrorKind::NotFound { 
                     println!("unexpected error: {:?}", e);
                     break;
                 }
+                */
             }
         }
         if start.elapsed().as_secs() >= timeout {
